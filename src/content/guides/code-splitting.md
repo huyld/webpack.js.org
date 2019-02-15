@@ -26,6 +26,7 @@ contributors:
   - EugeneHlushko
   - Tiendo1011
   - byzyk
+  - huyld
 related:
   - title: <link rel=”prefetch/preload”> in webpack
     url: https://medium.com/webpack/link-rel-prefetch-preload-in-webpack-51a52358f84c
@@ -140,7 +141,7 @@ __webpack.config.js__
   };
 ```
 
-With the [`optimization.splitChunks`](/plugins/split-chunks-plugin/#optimization-splitchunks) configuration option in place, we should now see the duplicate dependency removed from our `index.bundle.js` and `another.bundle.js`. The plugin should notice that we've separated `lodash` out to a separate chunk and remove the dead weight from our main bundle. Let's do an `npm run build` to see if it worked:
+With the [`optimization.splitChunks`](/plugins/split-chunks-plugin/#optimizationsplitchunks) configuration option in place, we should now see the duplicate dependency removed from our `index.bundle.js` and `another.bundle.js`. The plugin should notice that we've separated `lodash` out to a separate chunk and remove the dead weight from our main bundle. Let's do an `npm run build` to see if it worked:
 
 ``` bash
 ...
@@ -162,11 +163,11 @@ Here are some other useful plugins and loaders provided by the community for spl
 
 ## Dynamic Imports
 
-Two similar techniques are supported by webpack when it comes to dynamic code splitting. The first and recommended approach is to use the [`import()` syntax](/api/module-methods#import-) that conforms to the [ECMAScript proposal](https://github.com/tc39/proposal-dynamic-import) for dynamic imports. The legacy, webpack-specific approach is to use [`require.ensure`](/api/module-methods#require-ensure). Let's try using the first of these two approaches...
+Two similar techniques are supported by webpack when it comes to dynamic code splitting. The first and recommended approach is to use the [`import()` syntax](/api/module-methods/#import-1) that conforms to the [ECMAScript proposal](https://github.com/tc39/proposal-dynamic-import) for dynamic imports. The legacy, webpack-specific approach is to use [`require.ensure`](/api/module-methods/#requireensure). Let's try using the first of these two approaches...
 
 W> `import()` calls use [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) internally. If you use `import()` with older browsers, remember to shim `Promise` using a polyfill such as [es6-promise](https://github.com/stefanpenner/es6-promise) or [promise-polyfill](https://github.com/taylorhakes/promise-polyfill).
 
-Before we start, let's remove the extra [`entry`](/concepts/entry-points/) and [`optimization.splitChunks`](/plugins/split-chunks-plugin) from our config as they won't be needed for this next demonstration:
+Before we start, let's remove the extra [`entry`](/concepts/entry-points/) and [`optimization.splitChunks`](/plugins/split-chunks-plugin/#optimizationsplitchunks) from our config as they won't be needed for this next demonstration:
 
 __webpack.config.js__
 
@@ -193,7 +194,7 @@ __webpack.config.js__
   };
 ```
 
-Note the use of `chunkFilename`, which determines the name of non-entry chunk files. For more information on `chunkFilename`, see [output documentation](/configuration/output/#output-chunkfilename). We'll also update our project to remove the now unused files:
+Note the use of `chunkFilename`, which determines the name of non-entry chunk files. For more information on `chunkFilename`, see [output documentation](/configuration/output/#outputchunkfilename). We'll also update our project to remove the now unused files:
 
 __project__
 
@@ -239,7 +240,7 @@ __src/index.js__
 
 The reason we need `default` is since webpack 4, when importing a CommonJS module, the import will no longer resolve to the value of `module.exports`, it will instead create an artificial namespace object for the CommonJS module, for more information on the reason behind this, read [webpack 4: import() and CommonJs](https://medium.com/webpack/webpack-4-import-and-commonjs-d619d626b655)
 
-Note the use of `webpackChunkName` in the comment. This will cause our separate bundle to be named `lodash.bundle.js` instead of just `[id].bundle.js`. For more information on `webpackChunkName` and the other available options, see the [`import()` documentation](/api/module-methods#import-). Let's run webpack to see `lodash` separated out to a separate bundle:
+Note the use of `webpackChunkName` in the comment. This will cause our separate bundle to be named `lodash.bundle.js` instead of just `[id].bundle.js`. For more information on `webpackChunkName` and the other available options, see the [`import()` documentation](/api/module-methods/#import-1). Let's run webpack to see `lodash` separated out to a separate bundle:
 
 ``` bash
 ...
